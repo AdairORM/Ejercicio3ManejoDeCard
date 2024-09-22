@@ -1,5 +1,6 @@
 package com.mexiti.listacomidaor
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,8 +30,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import com.mexiti.listacomidaor.data.DataSource
 import com.mexiti.listacomidaor.model.Platillo
@@ -59,15 +64,47 @@ fun MenuApp() {
 
 @Composable
 fun MenuCardList(platilloList: List<Platillo>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
-        items(platilloList) { platillo ->
-            MenuCard(
-                platillo = platillo,
-                modifier = modifier.padding(10.dp)
-            )
+
+    Scaffold (
+        topBar = {
+            MenuTopAppBar()
+        }
+    ){
+        it->
+        LazyColumn(contentPadding = it) {
+            items(platilloList) { platillo ->
+                MenuCard(
+                    platillo = platillo,
+                    modifier = modifier.padding(10.dp)
+                )
+            }
         }
     }
+
 }
+
+@SuppressLint("ResourceType")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuTopAppBar(modifier: Modifier =Modifier){
+CenterAlignedTopAppBar(title = {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Image(painter = painterResource(id = R.drawable.logo_cubiertos),
+             contentDescription =null,
+            modifier = modifier.run {
+                padding(8.dp)
+                    .size(64.dp)
+
+            }
+        )
+        Text(text = stringResource(id = R.string.Comudel),
+            style =MaterialTheme.typography.displayLarge)
+    }
+
+}, modifier = modifier
+)
+}
+
 @Composable
 fun MenuCard(platillo: Platillo, modifier: Modifier = Modifier) {
     Card(
@@ -129,3 +166,4 @@ fun MenuCard(platillo: Platillo, modifier: Modifier = Modifier) {
 fun ShowMenuCard() {
     MenuCardList(platilloList = DataSource().LoadPlatillos())
 }
+
